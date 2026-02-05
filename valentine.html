@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Invitation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .emoji-container {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: bounce 1s infinite;
+            display: block;
+            text-align: center;
+        }
+
+        .emoji-container img {
+            width: 140px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .celebrate {
+            animation: spin 0.6s ease-in-out, bounce 0.6s ease-in-out;
+        }
+
+        .title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        #yesBtn {
+            background-color: #28a745;
+            color: white;
+            min-width: 100px;
+        }
+
+        #yesBtn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        #noBtn {
+            background-color: #dc3545;
+            color: white;
+            min-width: 100px;
+        }
+
+        #noBtn:hover {
+            background-color: #c82333;
+        }
+
+        .celebration {
+            display: none;
+        }
+
+        .celebration.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .celebration-text {
+            font-size: 24px;
+            color: #ff1493;
+            font-weight: bold;
+            margin-top: 30px;
+            line-height: 1.6;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff1493;
+            pointer-events: none;
+            animation: confettiFall 3s ease-in forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img id="emojiImg" class="emoji-container" src="photo2.jpg" alt="🐻" onerror="this.style.display='none';document.getElementById('emojiFallback').style.display='block'">
+    <div id="emojiFallback" class="emoji-container" style="display:none">🐻</div>
+        
+        <div class="title">Will you be my Valentine? 💘</div>
+        
+        <div class="message" id="message"></div>
+        
+        <div class="button-container" id="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+
+        <div class="celebration" id="celebration">
+            <img id="celebrateImg" class="emoji-container celebrate" src="photo2.jpg" alt="🎉" style="display:block" onerror="this.style.display='none';document.getElementById('celebrateFallback').style.display='block'">
+            <div id="celebrateFallback" class="emoji-container celebrate" style="display:none">🎉</div>
+            <div class="celebration-text" id="celebrationText">
+                मलाई थाहा थियो तिमीले माया गर्नेछौ भन्ने।!!! 💖🎉
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const noPhrases = [
+            "Please💔",
+            "कृपया, प्लीज? 🥺 🥺",
+            "तर हामी सँगै धेरै सुन्दर देखिन्छौं! माया 💕",
+            "Please मलाई यस्तो नगर🥺, म नाजुक छु माया",
+            "एक मौका पुक्की🥺",
+            "मेरो मन नफुटाऊ माया:(🥺",
+            "May be next year🥺",
+            "प्लीज माया🥺",
+            "May be next year",
+            "प्लीज माया 🥺",
+            "माया गर्छु म तिमीलाई🥺",
+            "तिमी मजाक गर्‍दैछौ हो?🥺 🥺",
+            "Seriously?",
+            "मजाक नगर न!"
+        ];
+
+        let noClicks = 0;
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
+        const buttons = document.getElementById('buttons');
+        const celebration = document.getElementById('celebration');
+        const emojiImg = document.getElementById('emojiImg');
+        const celebrateImg = document.getElementById('celebrateImg');
+
+        yesBtn.addEventListener('click', () => {
+            buttons.classList.add('hidden');
+            // hide the initial GIF/emoji and show celebration GIF
+            if (emojiImg) emojiImg.style.display = 'none';
+            const fb = document.getElementById('emojiFallback'); if (fb) fb.style.display = 'none';
+            if (celebrateImg) celebrateImg.style.display = 'block';
+            const cfb = document.getElementById('celebrateFallback'); if (cfb) cfb.style.display = 'none';
+            celebration.classList.add('active');
+            createConfetti();
+        });
+
+        noBtn.addEventListener('click', () => {
+            noClicks++;
+            const newSize = 16 + noClicks * 5;
+            yesBtn.style.fontSize = newSize + 'px';
+            yesBtn.style.padding = (12 + noClicks * 2) + 'px ' + (30 + noClicks * 3) + 'px';
+
+            const phrase = noPhrases[Math.min(noClicks - 1, noPhrases.length - 1)];
+            noBtn.textContent = phrase;
+
+            // Optional: Make the No button smaller/hide over time
+            if (noClicks > 3) {
+                noBtn.style.fontSize = Math.max(6, 16 - noClicks * 1.5) + 'px';
+            }
+        });
+
+        function createConfetti() {
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.backgroundColor = ['#ff1493', '#ff69b4', '#ffc0cb', '#ee82ee'][Math.floor(Math.random() * 4)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>
